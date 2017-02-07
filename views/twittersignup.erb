@@ -1,0 +1,31 @@
+<h2>Sign up to enjoy the most amazing thing in this world</h2>
+<form action="/signup" method="POST">
+<div><span><strong>Name</strong></span><input type="text" name="email" placeholder="email" required></div>
+<div><span><strong>Email</strong></span><input type="password" name="password" placeholder="password" required></div>
+<div><span><strong>Age</strong></span><input type="text" name="age" placeholder="Age must be greater than 15" required>
+<% if t==3 %>
+<p/>Your age must be greater than 15</p>
+<% end %>
+</div>
+<button type="submit">Sign up</button>
+</form>
+<% if t==1 %>
+<h4>This email is already in use</h4>
+<% end %>
+<% if t==2 %>
+<h4>Thanks for signing up, Move back to the login page to start enjoying</h4>
+<% end %>
+<a href="/login">Back</a>
+<style>
+body
+{
+		
+}
+span
+{
+	display: inline-block;
+	width:100px;
+}
+
+</style>
+

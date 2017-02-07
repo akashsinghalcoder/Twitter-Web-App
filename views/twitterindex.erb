@@ -1,0 +1,187 @@
+<header>
+
+<h1> Welcome to twitter <%= "#{user.email}" %></h1>
+<h3>You can follow someone here</h3>
+<a href="/logout" style="float: right; margin-right: 20px;">Logout</a>
+
+<% follows=User.all() %>
+<form action="/tobefollowed" method="POST">
+<select name="tobefollowed">
+<% follows.each do |useri| %>
+<% valuet= Followers.all(:user_id1=>session[:user_id],:user_id2=>useri.user_id).first %>
+<% if useri.user_id!=session[:user_id] && valuet==nil%>
+<option value="<%= useri.user_id %>">
+		<%= useri.email%>
+				</option>
+<% end %>
+
+<% end %>
+</select>
+<button type="submit">Follow</button>
+</form>
+</header>
+<div class="Followers">
+<h3>Your followers</h3>
+<% follows.each do |useri| %>
+<% valuet= Followers.all(:user_id1=>session[:user_id],:user_id2=>useri.user_id).first %>
+	<% if useri.user_id!=session[:user_id]&&valuet!=nil %>
+	<form action="/tobefollowed" method="POST">
+		<input type="hidden" name="tobefollowed" value="<%= useri.user_id %>">
+		<%= useri.email%>
+		
+		<button type="submit">
+			<% if valuet!=nil %>
+			<%= "UnFollow" %>			
+			<% else %>
+			<%= "Follow" %>
+			<% end %>
+		</button>
+	</form>
+	<% end %>
+<% end %>
+
+</div>
+
+<div class="tweet">
+	<form action='/tweet' method="POST" style="margin-top: 20px;" >
+		<input type="text" name="tweet" required>
+		<button type="submit">Tweet</button>
+	</form>
+</div>
+<section>
+<div class="tweetscontent">
+	<% tweets.each do |tweet| %>
+	<div class="insidetweetcontent">
+		<p><span style="font-size: 2em"><%=tweet.content%></span>
+		<span style="display: inline-block; background-color: #abb2b9
+; width:30px; border-radius: 50%; text-align:center; border:2px solid #000000; ">
+		<%= tweet.likes %></span></p>
+		<form action="/like" method="POST">
+			<input type="hidden" name="tweet_id" value="<%= tweet.tweet_id %>">
+			<button type="submit">
+				<% value=Likes.all(:tweet_id=>tweet.tweet_id,:user_id=>session[:user_id]).first %>
+				<% if value==nil %>
+				<%= "Upvote" %>
+				<% else %>
+				<%= "Upvoted" %>
+				<% end %>
+			</button>
+		</form>
+		<form action="/deletetweet" method="POST">
+			<input type="hidden" name="tweet_id" value="<%= tweet.tweet_id %>">
+			<button type="submit">
+				Delete
+			</button>
+		</form>
+	</div>
+	<% end %>
+	
+<% users=Followers.all(:user_id1=>session[:user_id]) %>
+<% users.each do |current|%>
+<% tweet=Tweet.all(:user_id=>current.user_id2) %>
+
+<% tweet.each do |tweet| %>
+<div class="insidetweetcontent">
+<% name=User.all(:user_id=>tweet.user_id).first %>
+		<p><span style="font-size: 2em"><%=tweet.content%></span>
+		<span style="display: inline-block; background-color: #abb2b9
+; width:30px; border-radius: 50%; text-align:center; border:2px solid #000000; ">
+		<%= tweet.likes %></span>
+		<span style="color: blue; margin-left:10px;">by <%=name.email%></span></p>
+		<form action="/like" method="POST">
+			<input type="hidden" name="tweet_id" value="<%= tweet.tweet_id %>">
+			<button type="submit">
+				<% value=Likes.all(:tweet_id=>tweet.tweet_id,:user_id=>session[:user_id]).first %>
+				<% if value==nil %>
+				<%= "Upvote" %>
+				<% else %>
+				<%= "Upvoted" %>
+				<% end %>
+			</button>
+		</form>
+	
+
+</div>
+<% end %>
+
+
+<% end %>
+</div>
+</section>
+
+<style>
+header
+{
+
+	position: fixed;
+	width:100%;
+	
+	left:0px;
+	top:0px;
+	text-align: center;
+	border:2px solid #000000;
+	background-image: url("http://www.drodd.com/images11/twitter-backgrounds8.jpg");
+
+}
+.tweet
+{
+	position: fixed;
+	top:174px;
+	left:25%;
+	
+	text-align:center;
+	width: 75%;
+	height: 10%;
+	background-color: white;
+	border:2px solid #000000;
+		background-color:#3498db; 
+	
+}
+section
+{
+	margin-top: 250px;
+	margin-left: 25%;
+
+}
+
+.followers
+{
+	text-align: center;
+	position:fixed;
+	width:25%;
+	top:175px;
+	left:0px;
+	height:100%;
+	overflow: scroll;
+	background-color:#3498db;  
+
+	
+}
+button
+{
+	 
+	 border-radius:20%;
+
+}
+button:hover
+{
+	 box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.tweetscontent
+{
+	display: flex;
+	flex-direction: column;
+
+}
+.insidetweetcontent
+{
+	flex:1 100px;
+	background-color: #bfc9ca;
+	margin-bottom: 20px;
+	border:2px solid #000000;
+	text-align:center;
+}
+
+
+
+</style>
